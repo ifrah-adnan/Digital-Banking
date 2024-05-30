@@ -1,9 +1,6 @@
 package ma.adnan.ebankingbackend.entities;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -11,6 +8,7 @@ import ma.adnan.ebankingbackend.enums.AccountStatus;
 
 import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 
 /**
  * @author Dell Latitude 5420
@@ -20,15 +18,28 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+@DiscriminatorColumn(name = "TYPE",length = 20)
 public class BankAccount {
     @Id
 
     private String id;
     private double balance;
     private Date createdAt;
+    @Enumerated(EnumType.STRING)
+
     private AccountStatus status;
     @ManyToOne
     private Customers customer;
     @OneToMany(mappedBy = "bankAccount")
     private List<Operations> operationsList;
+    @PrePersist
+    public void prePersist() {
+        if (id == null) {
+            id = UUID.randomUUID().toString();
+        }
+        if (createdAt == null) {
+            createdAt = new Date();
+        }
+    }
 }

@@ -12,6 +12,7 @@ import java.util.List;
  * IFRAH soumia
  **/
 @Entity
+@DiscriminatorValue("CA")
 @Data @NoArgsConstructor @AllArgsConstructor
 public class Customers {
     @Id
