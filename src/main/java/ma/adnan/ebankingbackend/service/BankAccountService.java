@@ -1,6 +1,6 @@
 package ma.adnan.ebankingbackend.service;
 
-import ma.adnan.ebankingbackend.dto.CustomersDto;
+import ma.adnan.ebankingbackend.dto.*;
 import ma.adnan.ebankingbackend.entities.BankAccount;
 import ma.adnan.ebankingbackend.entities.CurrentAccount;
 import ma.adnan.ebankingbackend.entities.Customers;
@@ -17,19 +17,23 @@ import java.util.List;
  **/
 public interface BankAccountService {
      CustomersDto saveCustomer(CustomersDto customersDto);
-     CurrentAccount saveCurrentBankAccount(double initialBalance, Long customerId, double overDraft) throws NotFoundCustomerException;
-     SavingAccount saveSavingBankAccount(double initialBalance, Long customerId, double interestRate) throws NotFoundCustomerException;
+     BankAccountCurrentDTO saveCurrentBankAccount(double initialBalance, Long customerId, double overDraft) throws NotFoundCustomerException;
+     BankAccountDTOSAving saveSavingBankAccount(double initialBalance, Long customerId, double interestRate) throws NotFoundCustomerException;
 
      List<CustomersDto> listCustomers();
-     BankAccount getBankAccount(String accountId) throws NotFoundBankAccountException;
+     BankAccountDTo getBankAccount(String accountId) throws NotFoundBankAccountException;
      void debit(String accountId,double amount,String description) throws NotFoundBankAccountException, BalanceNotSufficentException;
      void credit (String accountId,double amount,String description) throws BalanceNotSufficentException, NotFoundBankAccountException;
      void transfer(String accountIdSource,String accountIdDestination,double amount) throws BalanceNotSufficentException, NotFoundBankAccountException;
-     List<BankAccount> bankAccountList();
+     List<BankAccountDTo> bankAccountList();
      CustomersDto getCustomerById(Long id) throws NotFoundCustomerException;
 
 
      CustomersDto updateCustomer(CustomersDto customersDto);
      void DeleteCustomer(Long id) throws NotFoundCustomerException;
+
+     List<AccountOperationDto> accountHistory(String accountId);
+
+     AccountHistoryDto getAccountHistory(String accountId,int page,int size) throws NotFoundBankAccountException;
 }
 

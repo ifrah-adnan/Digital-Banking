@@ -1,5 +1,8 @@
 package ma.adnan.ebankingbackend;
 
+import ma.adnan.ebankingbackend.dto.BankAccountCurrentDTO;
+import ma.adnan.ebankingbackend.dto.BankAccountDTOSAving;
+import ma.adnan.ebankingbackend.dto.BankAccountDTo;
 import ma.adnan.ebankingbackend.dto.CustomersDto;
 import ma.adnan.ebankingbackend.entities.*;
 import ma.adnan.ebankingbackend.enums.AccountStatus;
@@ -17,6 +20,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 
 import java.util.Date;
+import java.util.List;
 import java.util.UUID;
 import java.util.stream.Stream;
 
@@ -39,27 +43,38 @@ public class EbankingBackendApplication {
 				bankAccountService.saveCustomer(customers);
 
 			});
-//			bankAccountService.listCustomers().forEach(customers -> {
-//				try {
-//					bankAccountService.saveSavingBankAccount(Math.random()*3333,customers.getId(),4.33);
-//					bankAccountService.saveCurrentBankAccount(Math.random()*3332, customers.getId(),38888);
-//					bankAccountService.bankAccountList().forEach(bankAccount -> {
-//						for (int i = 0; i < 10; i++) {
-//							try {
-//								bankAccountService.credit(bankAccount.getId(), 10000+Math.random()*1200,"credit");
-//								bankAccountService.debit(bankAccount.getId(), 1000+Math.random()*200,"debit");
-//
-//							} catch (BalanceNotSufficentException |NotFoundBankAccountException e) {
-//								throw new RuntimeException(e);
-//							}
-//
-//						}
-//
-//					});
-//				} catch (NotFoundCustomerException e) {
-//					throw new RuntimeException(e);
-//				}
-//			});
+			bankAccountService.listCustomers().forEach(customers -> {
+				try {
+					bankAccountService.saveSavingBankAccount(Math.random()*3333,customers.getId(),4.33);
+					bankAccountService.saveCurrentBankAccount(Math.random()*3332, customers.getId(),38888);
+					List<BankAccountDTo> bankAccountDToList=bankAccountService.bankAccountList();
+					for (BankAccountDTo bankAccount: bankAccountDToList
+						 ) {
+						
+
+						for (int i = 0; i < 10; i++) {
+							try {
+								String accountId;
+								if (bankAccount instanceof BankAccountDTOSAving){
+accountId=((BankAccountDTOSAving) bankAccount).getId();
+								}
+								else {
+									accountId=((BankAccountCurrentDTO) bankAccount).getId();
+
+								}
+								bankAccountService.credit(accountId, 10000+Math.random()*1200,"credit");
+								bankAccountService.debit(accountId, 1000+Math.random()*200,"debit");
+
+							} catch (BalanceNotSufficentException |NotFoundBankAccountException e) {
+								throw new RuntimeException(e);
+							}
+
+						}}
+
+					} catch (NotFoundCustomerException e) {
+                    throw new RuntimeException(e);
+                };
+			});
 
 
 			};
